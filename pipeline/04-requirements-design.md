@@ -27,9 +27,14 @@ Translate research + clarifications into three named artifacts. Each has a diffe
 - Use `templates/design.md` as the skeleton.
 
 ### `eval-spec.md`
-- Per user-story, a list of testable pass criteria. Each criterion has an **evaluator**: "unit test", "integration test", "browser verifier", "manual user approval".
-- For every criterion whose evaluator is a test, a **named test signature** (one line, no code). Encodes the black-box user-observable behavior: `test_upload_rejects_files_over_10mb` for pytest, `uploadRejectsFilesOver10MB()` for vitest, etc. The Code-Reviewer in Stage 08 checks that each named test exists in the diff for the slice that owns the criterion.
-- Architect does NOT write test files. Names only. File paths, fixtures, and actual test bodies are decided by the Step-Researcher (knowledge of runner conventions) and written by the Coder.
+- Per user-story, a list of testable pass criteria. Each criterion has an **evaluator** — either deterministic or non-deterministic:
+  - **Deterministic evaluators** (for code with predictable outputs): `unit test`, `integration test`, `browser verifier`, `manual`.
+  - **Non-deterministic evaluators** (for LLM-based / AI code where outputs vary): `llm-as-judge`, `schema-check`, `semantic-match`, `regex-match`, `threshold`.
+- **Deterministic criteria:** a **named test signature** (one line, no code) encoding the black-box behavior: `test_upload_rejects_files_over_10mb` for pytest, `uploadRejectsFilesOver10MB()` for vitest.
+- **Non-deterministic criteria:** a **named eval signature**, plus a **pass threshold** (e.g., "≥4/5 judge score", "100% schema valid", "≥0.85 cosine similarity") and a **sample size** (how many runs to evaluate, e.g., N=10). The Architect defines what "pass" means quantitatively — not vague ("good quality") but measurable ("judge rates ≥4/5 on rubric R in 8/10 runs").
+- The Architect classifies each criterion independently. A single feature can mix both types.
+- Architect does NOT write test/eval files. Names only. File paths, fixtures, eval harnesses, and actual bodies are decided by the Step-Researcher and written by the Coder.
+- The Code-Reviewer in Stage 08 checks that each named test/eval exists in the diff for the slice that owns the criterion.
 - Regression criteria — list of previously-shipped slices whose behavior must not change when this feature lands.
 - Performance budgets if applicable.
 - Security checks required for this feature (e.g., "auth-free routes must not leak PII").

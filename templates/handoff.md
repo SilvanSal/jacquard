@@ -9,7 +9,8 @@ _Feature: [feature-slug] · Slice: [S0N] · Written: [YYYY-MM-DD] · Word budget
 
 [1 paragraph — user-visible outcome. What can the user do now that they couldn't before? Reference eval criteria by ID.]
 
-**Eval criteria green:** [E-XX.Y, E-XX.Z]
+**Eval criteria green (deterministic):** [E-XX.Y, E-XX.Z — all tests pass]
+**Eval criteria green (non-deterministic):** [E-XX.A — 9/10 runs ≥4/5 (threshold: 8/10)]
 **Eval criteria still red:** [E-XX.W, if any, with reason]
 **Eval criteria untested:** [IDs, if any]
 
@@ -66,4 +67,4 @@ Items discovered during this slice that belong in future slices, not this one.
 - Step spec: `specs/[feature]/slices/[N]/step-spec.md`
 - Knowledge: `specs/[feature]/slices/[N]/knowledge.md`
 - Review: `specs/[feature]/slices/[N]/review.md`
-- Commits: [SHA1], [SHA2], [SHA3]
+- Commits: [SHA1 (RED)], [SHA2 (GREEN)], [SHA3 (RED)], [SHA4 (GREEN)]

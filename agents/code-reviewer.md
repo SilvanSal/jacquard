@@ -29,7 +29,9 @@ Check:
 - Obvious bugs, race conditions, unhandled error paths, dead code.
 - Any `TODO` / `FIXME` / `_removed` / commented-out code left behind?
 - Tests added for new code? Do they actually test the new behavior (not just smoke-test)?
-- Every named test in `eval-spec.md` that belongs to this slice is present in the diff with that exact name. Missing named tests = `block`.
+- Every named test/eval in `eval-spec.md` that belongs to this slice is present in the diff with that exact name. Missing named test/eval = `block`.
+- **TDD commit discipline:** verify commits follow the Red-Green pattern. RED commits (`test:` or `eval:` prefix) should contain only test/eval code; GREEN commits (`feat:` prefix) should contain only implementation. Each GREEN must be preceded by a RED whose tests/evals it addresses. Missing or out-of-order pairing = `warn`.
+- **Non-deterministic eval quality:** for `eval:` commits, verify the eval harness includes: evaluator function matching the eval-spec type, pass threshold matching eval-spec, sample size ≥ eval-spec minimum, and pinned judge model (if `llm-as-judge`). Missing any of these = `warn`.
 
 ## Hard rules
 - Read-only. Never edit code. The Coder is the only author.

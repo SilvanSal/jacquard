@@ -28,7 +28,7 @@ model: sonnet
 
 ### step-spec.md (templates/step-spec.md)
 - Slice ID + user-visible outcome copied verbatim from `slice-plan.md`.
-- Sub-tasks (3–10), each one-commit-sized, ordered.
+- Sub-tasks (3–10) structured as **TDD Red-Green pairs**. Odd sub-tasks = RED (write failing tests, name the eval criteria and test names from `eval-spec.md`). Even sub-tasks = GREEN (write implementation to pass those tests). Non-testable work (config, file moves) gets standalone entries, not pairs.
 - Files expected to be created/modified (best guess).
 - Eval criteria this slice satisfies, copied from `eval-spec.md` by ID, verbatim.
 - Explicit out-of-scope list.
@@ -39,6 +39,7 @@ model: sonnet
 - Gotchas/footguns — with StackOverflow / GitHub issue / changelog citations.
 - Minimal working example from official docs.
 - Refresh policy — default every 90 days, override on version bumps.
+- **Eval framework section (only if this slice has non-deterministic criteria):** pick a free, open-source eval framework based on the project's language and test runner. Options: hand-rolled (always available), promptfoo (JS/TS), deepeval (Python/pytest), Inspect AI (safety evals). Document the choice, install command, and integration method. See `pipeline/07a-eval-harness.md` § "Free eval framework options" for selection rules.
 
 ## Dedup + trap surfacing (one pass, before drafting knowledge.md)
 - For each library/API this slice touches, grep the five sources above for keywords.

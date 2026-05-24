@@ -24,7 +24,8 @@ You will run these in strict order. Each stage has a stop condition. Do not skip
 ─── loop per slice ───
 05.5  drift-check           (orchestrator)       → halt-and-surface if repo drifted since last handoff (see below)
 06  research-step           (Step-Researcher)    → specs/[feature]/slices/[N]/knowledge.md
-07  execute-step            (Coder)              → code + commit
+07  execute-step            (Coder, TDD)         → code + commits (RED/GREEN)
+     07a eval-harness        (conditional read)   only if step-spec has LLM evals
 08  review                  (Review cluster)     → specs/[feature]/slices/[N]/review.md
 09  write-handoff           (Handoff-Writer)     → specs/[feature]/slices/[N]/handoff.md
                             → STOP. New session for next slice.

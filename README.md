@@ -95,6 +95,7 @@ Each subagent reads only what its job requires. The orchestrator enforces this i
 | Slice-Planner | v | — | v | — | — | — | — | — | — | v | — | — | — |
 | Step-Researcher | v | — | v | — | — | v | grep | — | — | — | — | grep | grep |
 | Coder | v | — | v | v | v | v | v | v | — | — | v (scoped paths) | grep + append | grep + append |
+| Coder + eval-harness | (same as Coder, plus reads `pipeline/07a-eval-harness.md` — only when step-spec has `(RED — eval)` sub-tasks) |
 | Code-Reviewer | — | — | — | v | v | v | — | — | v | v (test-name column only) | — | — | — |
 | Security-Reviewer | v | — | — | — | — | — | — | — | v | — | — | — | — |
 | Browser-Verifier (end-of-feature only) | — | — | — | — | — | — | — | — | — | v | running app | — | — |

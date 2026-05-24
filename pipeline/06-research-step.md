@@ -14,7 +14,11 @@ This stage does two things in one pass: **first draft the step-spec**, then **re
 
 Use `templates/step-spec.md`. Contains:
 - Slice ID (e.g., `S02`) and the user-visible outcome from `slice-plan.md` (copied verbatim)
-- Concrete sub-tasks, ordered. Each sub-task is one-commit-sized. 3–10 sub-tasks typical.
+- Concrete sub-tasks, ordered as **TDD Red-Green pairs**. Odd sub-tasks are RED (write failing tests); even sub-tasks are GREEN (write implementation to pass them). 3–10 sub-tasks typical (i.e. 2–5 pairs, plus optional standalone sub-tasks for non-testable work like config).
+- Each RED sub-task names the eval criteria it covers and the test names from `eval-spec.md`.
+- Each GREEN sub-task references which RED sub-task it satisfies.
+- Sub-tasks with no testable behavior (config changes, pure file moves) get standalone entries, not pairs.
+- **If the slice has non-deterministic eval criteria:** mark those RED sub-tasks as `(RED — eval)` and include the evaluator type, pass threshold, and sample size from the eval-spec. The orchestrator uses these markers to conditionally load `pipeline/07a-eval-harness.md` for the Coder. Also document the chosen eval framework in `knowledge.md` (see below).
 - Files expected to be created or modified (best guess — the Coder may diverge, but this catches obvious mistakes).
 - Eval criteria this step satisfies, copied from `eval-spec.md` by ID. Verbatim.
 - Explicit out-of-scope list. "This step does NOT touch the payment module."

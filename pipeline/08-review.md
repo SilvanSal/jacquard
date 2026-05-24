@@ -23,7 +23,9 @@ Catch problems the Coder missed. Two narrow reviewers with differentiated reads 
 - Are there obvious bugs, race conditions, unhandled error paths, or dead code?
 - Any `TODO` / `FIXME` / `_removed` / commented-out-code left behind?
 - Are tests added for new code? Do they actually test the new behavior?
-- **Named-test presence:** every criterion in `eval-spec.md` owned by this slice whose `Test name` is filled must have a test with that exact name in the diff. Missing named test = `block`.
+- **Named-test/eval presence:** every criterion in `eval-spec.md` owned by this slice whose `Test name` is filled must have a test or eval with that exact name in the diff. Missing named test/eval = `block`.
+- **TDD commit discipline:** commits must follow the Red-Green pattern. RED commits (`test:` or `eval:` prefix) contain only test/eval code. GREEN commits (`feat:` prefix) contain only implementation code. Each GREEN must be preceded by a RED whose tests/evals it satisfies. Missing or out-of-order RED/GREEN pairing = `warn`.
+- **Non-deterministic eval quality:** for `eval:` commits, verify the eval harness includes: evaluator function matching the eval-spec type, pass threshold matching eval-spec, sample size ≥ eval-spec minimum, and pinned judge model (if `llm-as-judge`). Missing any of these = `warn`.
 **Output format:** verdict = `pass` / `pass-with-notes` / `block`, followed by a numbered list of issues. Each issue has severity (`block` / `warn` / `nit`) and a file:line reference. `block` and `warn` issues MAY include a **suggested-fix snippet** when the fix is obvious and local — see rules below. Suggestions are text only; the Coder writes the actual patch.
 
 **Suggested-fix rules (Code-Reviewer only):**

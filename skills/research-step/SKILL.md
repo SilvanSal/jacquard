@@ -20,6 +20,7 @@ allowed-tools: Read, Grep, Glob, WebSearch, WebFetch, Write
 
 ## Rules
 - Step-spec first, knowledge.md second.
+- **Step-spec sub-tasks must be structured as TDD Red-Green pairs.** Odd sub-tasks = RED (write failing tests, naming eval criteria + test names from `eval-spec.md`). Even sub-tasks = GREEN (write implementation to pass those tests). Non-testable work (config, file moves) gets standalone entries, not pairs.
 - Step-Researcher does NOT read `best-practices.md` or `code-style.md` — those are for the Coder.
 - Every API claim has a source URL; unverified claims tagged `unverified`.
 - Pin versions explicitly (`requests==2.31.0`, not `requests`).

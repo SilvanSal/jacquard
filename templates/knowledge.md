@@ -54,6 +54,19 @@ Smallest snippet that demonstrates the pattern this slice will use. From officia
 [code]
 ```
 
+## Eval framework (only if this slice has non-deterministic criteria)
+
+> Skip this section entirely if every sub-task in the step-spec is deterministic.
+
+| Choice | Framework | Why |
+|---|---|---|
+| [e.g., hand-rolled / promptfoo / deepeval / inspect-ai] | [version] | [matches tech-stack, integrates with existing test runner, etc.] |
+
+**Setup:** [one-liner install command, e.g., `pip install deepeval` or `npm install -g promptfoo`]
+**Integration:** [how it hooks into the test runner — e.g., "pytest plugin, use `deepeval` metrics in test functions"]
+
+See `pipeline/07a-eval-harness.md` § "Free eval framework options" for the full list and selection rules.
+
 ## Unverified claims
 
 Anything above where we could not find a canonical source. Coder should verify before relying.

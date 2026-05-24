@@ -41,7 +41,8 @@ One-screen map of the 10 stages. For rules, read `pipeline/00-constitution.md` a
   ║                                                 (dedup-greps specs/ first)     ║
   ║                                   │                                            ║
   ║                                   ▼                                            ║
-  ║  07  execute-step          (Coder)              → code + commits               ║
+  ║  07  execute-step          (Coder, TDD)          → code + commits (RED/GREEN)   ║
+  ║       07a eval-harness     (conditional read)    only if step-spec has evals   ║
   ║                                                 may append error-registry +    ║
   ║                                                 hallucination-traps            ║
   ║                                   │                                            ║

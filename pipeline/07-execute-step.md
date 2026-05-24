@@ -10,13 +10,54 @@ Execute exactly one slice. The Coder writes real application code. This is the O
 
 ## What the Coder does
 
-1. Read the step-spec top to bottom. Internalize the sub-tasks, files, eval criteria, out-of-scope list.
+1. Read the step-spec top to bottom. Internalize the TDD sub-task pairs, files, eval criteria, out-of-scope list.
 2. Read knowledge.md. Note the pinned versions and any footguns.
 3. Read the previous handoff.md (if any). Internalize decisions and gotchas from the prior slice that affect this one.
 4. Read best-practices.md, code-style.md, tech-stack.md. These frame *how* to write, not *what* to write.
-5. Execute sub-tasks in order. Commit after each sub-task (or logical group of 1–3 sub-tasks). Use the commit message format from `best-practices.md`.
-6. After the last sub-task, run the test suite (or whatever `best-practices.md` says "done" means). If tests fail, fix. If you cannot fix within your scope, write a clear failure report and stop — do not proceed to review.
-7. Hand off to the Orchestrator with: commit SHAs, test status, any deviations from the step-spec and why.
+5. Execute sub-tasks in TDD pairs — Red then Green. See "TDD discipline" below.
+6. After the last GREEN sub-task, run the full test suite (or whatever `best-practices.md` says "done" means). If tests fail, fix. If you cannot fix within your scope, write a clear failure report and stop — do not proceed to review.
+7. Hand off to the Orchestrator with: commit SHAs, test status, Red/Green confirmation per pair, any deviations from the step-spec and why.
+
+## TDD discipline — Red-Green-Refactor
+
+The Coder follows strict test-driven development. Every functional unit is built in a Red-Green pair as defined in the step-spec. This is not optional. The pipeline enforces the cycle because code that passes tests that were never seen failing proves nothing.
+
+The eval-spec classifies each criterion as either **deterministic** (unit test, integration test) or **non-deterministic** (llm-as-judge, schema-check, semantic-match, regex-match, threshold). The TDD cycle applies to both, but the mechanics differ.
+
+### Deterministic TDD (unit tests, integration tests)
+
+For criteria with predictable, reproducible outputs.
+
+**RED phase (odd sub-tasks):**
+1. Write the test(s) for the behavior described in the sub-task. Use the test names from `eval-spec.md` exactly.
+2. Run the test(s). They MUST fail. If they pass, something is wrong: either the test is vacuous (testing nothing), the behavior already exists (step-spec is wrong — raise to orchestrator), or the assertion is tautological. Investigate before proceeding.
+3. Commit the failing tests. Message format: `test: [description] (red — not yet implemented)`.
+
+**GREEN phase (even sub-tasks):**
+1. Write the minimum implementation code to make the RED phase tests pass. No more, no less.
+2. Run the test(s) from the RED phase. They MUST pass. If they don't, fix the implementation — do not weaken the test.
+3. Run any previously-passing tests to confirm no regressions.
+4. Commit the implementation. Message format: `feat: [description] (green — tests pass)`.
+
+### Non-deterministic TDD (LLM evals) — conditional read
+
+If the step-spec contains sub-tasks marked `(RED — eval)`, the Coder also reads `pipeline/07a-eval-harness.md` before starting those sub-tasks. That file covers the full non-deterministic cycle: eval harness structure (dataset, evaluator, runner), free framework options, evaluator-specific rules (judge pinning, local embeddings), smoke vs. full run protocol, and the detailed Red-Green cycle for LLM code.
+
+**If the step-spec has NO eval sub-tasks, skip `07a-eval-harness.md` entirely.** The deterministic TDD rules above are sufficient.
+
+The same hard rules apply to both types — never skip RED, never weaken a test or lower a threshold, one pair at a time. Non-deterministic evals use `eval:` commit prefix instead of `test:`.
+
+### REFACTOR (optional, within GREEN phase)
+
+If the code works but is messy, refactor immediately after the GREEN confirmation. Re-run tests/evals to confirm they still pass. Include the refactor in the GREEN commit or as a separate `refactor:` commit — do not mix refactor with new RED tests.
+
+### Hard rules
+
+- **Never skip RED.** Every GREEN commit must be preceded by a RED commit whose tests/evals it satisfies. If a sub-task has no testable behavior (e.g., config file changes, pure refactors), the step-spec should not mark it as a TDD pair — it gets a standalone sub-task instead.
+- **Never weaken a test or lower a threshold to make GREEN easier.** If the test is wrong, fix it and re-confirm RED before proceeding to GREEN. If a threshold is unreachable, halt and raise — the Architect owns the threshold, not the Coder. Log the correction as a deviation.
+- **Tests/evals that pass on first write are a smell.** If a RED-phase test/eval passes immediately, halt and diagnose. Valid reasons: the behavior was implemented by a prior pair (in which case it's a test gap from that pair — note it). Invalid: the test doesn't assert anything meaningful.
+- **One pair at a time.** Do not batch-write all tests/evals then batch-write all implementations. The point of TDD is the tight feedback loop: test, fail, implement, pass, next.
+- **Test/eval scope matches sub-task scope.** A RED sub-task covers the eval criteria listed in it — no more. Don't write tests for future sub-tasks.
 
 ## Rules for the Coder
 
@@ -108,7 +149,16 @@ The Coder treats `specs/error-registry.md` and `specs/research/hallucination-tra
 >
 > Two grep-only lookups: before writing code in an unfamiliar area, `grep` `specs/research/hallucination-traps.md` for the library/API you're about to use. Before spending >10 min debugging a non-trivial failure, `grep` `specs/error-registry.md` for a word from the error signature. Do not read these cover-to-cover.
 >
-> Your job: execute the sub-tasks in step-spec.md. Commit after each sub-task or small group. Run tests before reporting done. Do not touch files outside the step-spec's file list without raising it. Do not proceed to the review stage — the orchestrator handles that.
+> **You follow strict TDD (Test-Driven Development).** Sub-tasks come in Red-Green pairs:
+> - **RED:** Write the test(s) from the odd sub-task. Run. Must FAIL. Commit: `test: [desc] (red — not yet implemented)`.
+> - **GREEN:** Write the minimum implementation. Run. Must PASS. Confirm no regressions. Commit: `feat: [desc] (green — tests pass)`.
+> Never skip RED. Never weaken a test. One pair at a time.
+> Full TDD rules: `pipeline/07-execute-step.md` § "TDD discipline — Red-Green-Refactor".
+>
+> [CONDITIONAL — include ONLY if step-spec has `(RED — eval)` sub-tasks]:
+> **This slice has non-deterministic eval criteria.** Also read `pipeline/07a-eval-harness.md` before starting any `(RED — eval)` sub-task. It covers eval harness structure, free framework options, evaluator-specific rules, and the non-deterministic Red-Green cycle. For eval sub-tasks, use `eval:` commit prefix instead of `test:`.
+>
+> Do not touch files outside the step-spec's file list without raising it. Do not proceed to the review stage — the orchestrator handles that.
 >
 > You have a bounded micro-research escape hatch: one `WebSearch` or `WebFetch` per factual blocker where a library demonstrably contradicts `knowledge.md`. Log the Q+A as a deviation. You may NOT use it to change the step-spec, pinned versions, or scope — any of those = halt. See "Micro-research escape hatch" in `pipeline/07-execute-step.md`.
 >
@@ -116,8 +166,8 @@ The Coder treats `specs/error-registry.md` and `specs/research/hallucination-tra
 >
 > Long-stage context discipline: after every sub-task, abbreviate tool output older than two sub-tasks back (keep SHAs, files, error signatures; drop raw diffs/dumps). Before sub-task 4, write a one-paragraph self-summary (sub-tasks done, files+SHAs, deviations, remaining verbatim). Before sub-task 7, drop all detail from sub-tasks 1..N−3 except SHAs + deviation log. Any single tool result >~4K chars: abbreviate to first ~20 lines + count tag in your reasoning. Never discard the deviation log, micro-research log, registry appends, running file list, or the step-spec itself. On 413 mid-sub-task: stop, compact per marker 3, retry once, log as deviation. Full rules: `pipeline/07-execute-step.md` § "Long-stage context discipline".
 >
-> When done, output: commit SHAs in order, test status (pass/fail/skipped), any deviations with reasoning (including any micro-research lookups), and any error-registry / hallucination-traps appends. Stop.
+> When done, output: commit SHAs in order (tagged RED or GREEN), test status (pass/fail/skipped), eval status (pass/fail/skipped with pass rates per non-deterministic criterion), Red-Green confirmation per pair (test/eval failed at RED, passed at GREEN), any deviations with reasoning (including any micro-research lookups), and any error-registry / hallucination-traps appends. Stop.
 
 ## Stop condition
 
-All sub-tasks from step-spec.md are committed. Test suite passes (or failures are documented with reasoning). Coder has reported commit SHAs and deviations back to the orchestrator. Orchestrator then dispatches stage 08.
+All sub-task pairs from step-spec.md are committed (RED then GREEN for each pair). Every RED commit has a confirmed test failure; every GREEN commit has those tests passing. Full test suite passes (or failures are documented with reasoning). Coder has reported commit SHAs (tagged RED/GREEN) and deviations back to the orchestrator. Orchestrator then dispatches stage 08.
