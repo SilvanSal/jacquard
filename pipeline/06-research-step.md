@@ -1,7 +1,7 @@
 # Stage 06 — Per-Step Research
 
 **Run by:** `Step-Researcher` subagent (fresh context per step, read-only + WebSearch/WebFetch)
-**Reads:** the current step-spec, `specs/[feature]/design.md` (relevant section only), `tech-stack.md`, `specs/constitution.md`, `specs/error-registry.md` (grep-only), `specs/research/hallucination-traps.md` (grep-only), plus targeted topic-level reads of prior slice `knowledge.md` files triggered by the dedup check below
+**Reads:** the current step-spec, `specs/[feature]/design.md` (relevant section only), `tech-stack.md`, `specs/constitution.md`, `specs/error-registry.md` (grep-only), `specs/research/hallucination-traps.md` (grep-only), `input/research-findings/INDEX.md` (grep by tags matching this slice's libraries/APIs, then read matched findings), plus targeted topic-level reads of prior slice `knowledge.md` files triggered by the dedup check below
 **Produces:** `specs/[feature]/slices/[N]/knowledge.md` and `specs/[feature]/slices/[N]/step-spec.md`
 
 ## Purpose
@@ -57,9 +57,16 @@ The Step-Researcher's default is self-contained output. The dedup check is the n
 - If a prior entry is stale (version drift or >90 days), DO NOT update the prior file. Research fresh for this slice and note the stale prior entry in the orchestrator handoff so it can be refreshed separately.
 - Stop after one pass. Dedup is not a research rabbit hole — budget one round of greps, then draft.
 
+## Research findings surfacing
+
+Independent of the dedup check, the Step-Researcher `grep`s `input/research-findings/INDEX.md` for tags matching the libraries, APIs, and domain concepts this slice will touch. For any matching finding IDs:
+- Read the matched finding's "Constraints introduced" table.
+- Surface each relevant constraint as a one-line pointer in `knowledge.md` § "Gotchas and footguns": `Research constraint — [constraint]. See input/research-findings/RF-YYYY-MM-DD-NNN.md.`
+- If the finding has `confidence: contested` or `status: pending-review`, note the uncertainty.
+
 ## Hallucination-traps + error-registry surfacing
 
-Independent of the dedup check, the Step-Researcher `grep`s `specs/research/hallucination-traps.md` and `specs/error-registry.md` for the library/API names this slice will touch. Any matching rows or entries get a one-line pointer in `knowledge.md` § "Gotchas and footguns":
+Additionally, the Step-Researcher `grep`s `specs/research/hallucination-traps.md` and `specs/error-registry.md` for the library/API names this slice will touch. Any matching rows or entries get a one-line pointer in `knowledge.md` § "Gotchas and footguns":
 
 - For hallucination-traps matches: `Trap — [trap name]. Use [correct pattern], not [wrong pattern]. Source: specs/research/hallucination-traps.md.`
 - For error-registry matches (only if the error signature is still relevant at the pinned version): `Prior bug — [slug]. See specs/error-registry.md.`

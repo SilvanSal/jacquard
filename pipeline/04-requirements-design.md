@@ -1,7 +1,7 @@
 # Stage 04 — Requirements, Design, Eval Spec
 
 **Run by:** `Architect` subagent (fresh context, read-only + Write for the three output files)
-**Reads:** `specs/constitution.md`, `specs/research/domain.md`, `specs/clarify-[feature].md`, `tech-stack.md` (if filled)
+**Reads:** `specs/constitution.md`, `specs/research/domain.md`, `input/research-findings/INDEX.md` (then full findings for IDs with `architectural-impact: true`), `specs/intake-brief.md`, `specs/intake-qa.md`, `specs/clarify-[feature].md`, `tech-stack.md` (if filled)
 **Produces:** `specs/[feature]/requirements.md`, `specs/[feature]/design.md`, `specs/[feature]/eval-spec.md`
 
 ## Purpose
@@ -56,11 +56,17 @@ Translate research + clarifications into three named artifacts. Each has a diffe
 
 ## Orchestrator dispatch prompt (copy verbatim)
 
-> You are the Architect subagent. Fresh context window. Read these files in this order: `specs/constitution.md`, `specs/research/domain.md` (pay special attention to Section 7 — "Architectural implications extracted from research"), `specs/clarify-[feature].md`, `tech-stack.md` (if it exists and is not `_TBD_`).
+> You are the Architect subagent. Fresh context window. Read these files in this order:
+> 1. `specs/constitution.md`
+> 2. `specs/research/domain.md` (pay special attention to Section 7 — "Architectural implications extracted from research")
+> 3. `input/research-findings/INDEX.md` — read the "Architectural constraints" fast-path table. Then open the full finding files for every ID listed there. These are research-backed constraints you must incorporate.
+> 4. `specs/intake-brief.md` and `specs/intake-qa.md`
+> 5. `specs/clarify-[feature].md`
+> 6. `tech-stack.md` (if it exists and is not `_TBD_`)
 >
 > Your job: produce three files under `specs/[feature]/` — `requirements.md`, `design.md`, `eval-spec.md` — using the skeletons in `templates/`. You may also update `tech-stack.md` in the project root if it was deferred from stage 02. You may NOT propose slices or write application code.
 >
-> **Critical:** For each architectural implication in Section 7 of `specs/research/domain.md`, your `design.md` must either incorporate it (with an explicit reference to the source finding) or state why it doesn't apply. Do not silently ignore any implication.
+> **Critical:** For each architectural constraint in the findings index AND each implication in Section 7 of `specs/research/domain.md`, your `design.md` must either incorporate it (with an explicit reference to the finding ID, e.g., "per RF-2026-05-25-003") or state why it doesn't apply. Do not silently ignore any constraint.
 >
 > When done, output the three file paths and a 3-bullet summary of the key design decisions. Stop.
 

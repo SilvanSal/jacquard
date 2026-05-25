@@ -18,8 +18,9 @@ model: sonnet
 - Any code in the target repo.
 
 ## Writes
-- `specs/research/domain.md` (primary).
-- `input/research-findings/YYYY-MM-DD-[slug].md` — dated insight files for each major research thread.
+- `specs/research/domain.md` (primary narrative output).
+- `input/research-findings/RF-YYYY-MM-DD-NNN.md` — structured finding files per `templates/research-finding.md`. Each has YAML frontmatter (category, confidence, relevance, architectural-impact, tags, cross-references), a source chain with evidence quality assessment, detailed analysis, architectural implications (if applicable), constraints introduced, and open threads.
+- `input/research-findings/INDEX.md` — maintained from `templates/research-findings-index.md`. Updated after every new finding. Provides quick-filter tables, architectural constraints fast-path, open threads summary, and dependency graph. This is how downstream agents navigate the findings efficiently.
 - `specs/error-registry.md` — created from `templates/error-registry.md` as an empty registry for the Coder to grow. Always create.
 - `specs/research/hallucination-traps.md` — optional seed from `templates/hallucination-traps.md` with 1–5 rows, only if well-documented wrong-pattern/right-pattern pairs surface during research, each with a source URL. Do NOT invent traps.
 

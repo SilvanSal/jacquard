@@ -25,32 +25,71 @@ Before forming any research queries, read `specs/intake-brief.md` and `specs/int
 
 If `specs/intake-brief.md` does not exist (pipeline running without Stage 00.5), proceed with the user brief directly.
 
-## Saving discovered insights
+## Saving discovered insights — structured research findings
 
-All newly discovered insights must be saved as **dated markdown files** in `input/research-findings/`:
+Every significant research insight is saved as a **structured finding file** in `input/research-findings/`:
 
 ```
-input/research-findings/YYYY-MM-DD-[slug].md
+input/research-findings/RF-YYYY-MM-DD-NNN.md
 ```
 
-Example: `input/research-findings/2026-04-30-competitor-stripe-analysis.md`
+Example: `input/research-findings/RF-2026-04-30-001.md` ("Unicode normalization required before comparison")
 
-This is in addition to `specs/research/domain.md`. The `input/research-findings/` folder accumulates insights across the whole process, making them available to the Architect (Stage 04) directly from the `input/` tree.
+This is in addition to `specs/research/domain.md`. The findings folder is the project's **research knowledge base** — it accumulates structured, cross-referenced insights that downstream stages can efficiently filter and navigate.
 
-Format for each research-findings file:
-```markdown
-# Research Finding: [Topic]
-_Date: YYYY-MM-DD · Stage: 01 Domain Research_
+### Finding schema
 
-## Summary
-[2–3 sentences]
+Use `templates/research-finding.md` for every finding. Each file has:
 
-## Details
-[Sourced findings — every claim has a URL]
+1. **YAML frontmatter** — machine-parseable metadata:
+   - `id`, `title`, `date`, `stage`, `author`
+   - `category` — one of 11 types (algorithmic-constraint, data-model, performance-cliff, processing-pipeline, interop-standard, failure-mode, regulatory, ux-pattern, security, competitive-intel, domain-concept)
+   - `confidence` — established / corroborated / single-source / contested / unverified
+   - `relevance` — critical / significant / contextual
+   - `architectural-impact` — true/false
+   - `supersedes`, `related`, `intake-qa-ref`, `domain-md-section`, `tags`
+   - `status` — active / superseded / retracted / pending-review
 
-## Architectural implications
-[What this means for the software's structure, if anything]
-```
+2. **Source chain** — not just a URL but the full evidence trail: primary sources, corroborating sources, and dissenting sources (if any). Each source typed (peer-reviewed, RFC, docs, blog, observation) with access date.
+
+3. **Detailed analysis** — the substance, structured by sub-questions. Every factual claim inline-cites a source from the chain.
+
+4. **Evidence quality assessment** — rated on source diversity, recency, reproducibility, applicability.
+
+5. **Architectural implications** (if `architectural-impact: true`) — structured per implication: source finding, what it means for the software, design constraint introduced, what breaks if ignored.
+
+6. **Constraints introduced** — table of explicit constraints with affected stages and roles.
+
+7. **Open threads** — unresolved questions with priority and recommended action.
+
+8. **Cross-references** — links to intake Q&A, constitution, related findings, error registry.
+
+### The index (mandatory)
+
+After writing or updating any finding, the Domain-Researcher MUST update `input/research-findings/INDEX.md` (create from `templates/research-findings-index.md` if it doesn't exist). The index provides:
+
+- **Quick-filter tables** — by relevance, by category, by architectural impact
+- **Architectural constraints fast-path** — the subset of findings the Architect needs first
+- **Open threads** — all unresolved questions across all findings, grouped by priority
+- **Dependency graph** — which findings build on others (Mermaid-compatible text tree)
+- **Superseded / retracted** — stale findings clearly marked
+
+The index is how downstream agents (Architect, Slice-Planner, Step-Researcher, Code-Reviewer) navigate the findings without opening every file. It is a working document, not a generated afterthought.
+
+### When to create a finding vs. just writing in domain.md
+
+- **Create a finding** when the insight is: substantial enough to have its own source chain, reusable across features, or carries constraints for downstream stages.
+- **Just write in domain.md** when the insight is: a brief factual note, part of a larger section's narrative, or only relevant to the current research pass.
+
+Rule of thumb: if a downstream agent (Architect, Coder, Reviewer) would need to grep for this insight later, it should be a finding with proper tags and frontmatter. If it's context that only makes sense as part of the domain research narrative, put it in domain.md.
+
+### IDs and sequencing
+
+IDs follow `RF-YYYY-MM-DD-NNN` where NNN is a zero-padded sequence number within that date. Example: the third finding discovered on 2026-05-25 is `RF-2026-05-25-003`. If the finding is later superseded, the new finding's frontmatter lists the old ID in `supersedes:` and the old finding's `status:` changes to `superseded`.
+
+### How many findings per research loop iteration
+
+Each iteration of the research loop (research → surface → user feedback → deeper research) typically produces 1–5 findings. A complex domain might produce 15–30 findings total across all iterations. Quality over quantity — a single well-structured finding with a strong source chain is worth more than 10 shallow ones.
 
 ## Interaction model — iterative research loop
 
@@ -300,7 +339,7 @@ The operator relays this to the expert. The expert either approves or provides c
 > - You MUST read papers thoroughly (full text, not just abstracts), summarize them in detail, and follow up on concepts you don't understand with additional research.
 > - You MUST extract architectural implications from every source — findings that constrain or shape the software's structure (problem taxonomies, complexity classes, required processing stages, data model constraints, etc.).
 > - You MUST run the iterative research loop: research a thread, surface findings + new questions to the user, incorporate their answer, research deeper based on what they told you, repeat. There is no fixed round limit — keep looping until you genuinely understand the domain. Surface findings incrementally, not all at the end.
-> - You MUST save discovered insights as dated files in `input/research-findings/` per the format in `pipeline/01-research-domain.md`.
+> - You MUST save every significant insight as a structured finding in `input/research-findings/RF-YYYY-MM-DD-NNN.md` using `templates/research-finding.md` (YAML frontmatter, source chain, evidence assessment, architectural implications, cross-references). Maintain `input/research-findings/INDEX.md` from `templates/research-findings-index.md` — update it after every new finding.
 >
 > You may use WebSearch, WebFetch, and browser tools. You may NOT propose an architecture, pick a tech stack, or write code.
 >
@@ -337,6 +376,6 @@ The operator relays this to the expert. The expert either approves or provides c
 
 ## Stop condition
 
-**Inline mode:** File `specs/research/domain.md` exists, has all 8 sections filled or explicitly marked "none identified" with reasoning, every factual claim has a source URL, and the timestamp is at the top. Section 4 (academic prior art) contains detailed multi-paragraph summaries for each significant paper — not just one-line distillations. Section 7 (architectural implications) is present and non-empty for any domain with research literature. `specs/error-registry.md` exists (empty or with the delete-me example). `specs/research/hallucination-traps.md` exists if 1–5 documented traps were found; otherwise is skipped with a one-line reason in the Domain-Researcher's output. Discovered insights are saved as dated files in `input/research-findings/`.
+**Inline mode:** File `specs/research/domain.md` exists, has all 8 sections filled or explicitly marked "none identified" with reasoning, every factual claim has a source URL, and the timestamp is at the top. Section 4 (academic prior art) contains detailed multi-paragraph summaries for each significant paper — not just one-line distillations. Section 7 (architectural implications) is present and non-empty for any domain with research literature. `specs/error-registry.md` exists (empty or with the delete-me example). `specs/research/hallucination-traps.md` exists if 1–5 documented traps were found; otherwise is skipped with a one-line reason in the Domain-Researcher's output. Structured research findings exist in `input/research-findings/RF-*.md` (each with YAML frontmatter, source chain, evidence assessment, and cross-references per `templates/research-finding.md`). `input/research-findings/INDEX.md` exists and is up-to-date with all findings.
 
 **Async mode:** All of the above, plus: at least one `expert-questionnaire-R[N].md` and corresponding `expert-answers-R[N].md` exist. `specs/research/expert-summary.md` exists and has been approved by the domain expert (operator confirms approval). No `_PENDING EXPERT INPUT_` markers remain in `domain.md`.

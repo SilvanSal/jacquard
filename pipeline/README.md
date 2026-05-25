@@ -89,7 +89,8 @@ input/
 ├── README.md                          ← created at welcome
 ├── [user-supplied materials]
 └── research-findings/
-    └── YYYY-MM-DD-[slug].md           ← stage 01
+    ├── INDEX.md                        ← stage 01 (maintained after every finding)
+    └── RF-YYYY-MM-DD-NNN.md           ← stage 01 (structured per templates/research-finding.md)
 
 specs/
 ├── constitution.md                    ← stage 00

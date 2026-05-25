@@ -61,6 +61,8 @@ Jacquard/
 │   ├── constitution.md
 │   ├── intake-brief.md
 │   ├── intake-qa.md
+│   ├── research-finding.md       # rich schema for each research insight (YAML frontmatter + source chain)
+│   ├── research-findings-index.md # auto-maintained index with filter tables + dependency graph
 │   ├── requirements.md
 │   ├── design.md
 │   ├── eval-spec.md
@@ -113,11 +115,11 @@ Each subagent reads only what its job requires. The orchestrator enforces this i
 | Agent | constitution | domain-research | tech-stack | code-style | best-practices | step-spec | knowledge | prev-handoff | diff | eval-spec | repo | error-registry | hallucination-traps |
 |---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 | Intake-Reader | v | — | — | — | — | — | — | — | — | — | input/ (R) | — | — |
-| Domain-Researcher | v | — | — | — | — | — | — | — | — | — | — | writes (empty seed) | writes (optional seed) |
+| Domain-Researcher | v | — | — | — | — | — | — | — | — | — | findings (W+index) | writes (empty seed) | writes (optional seed) |
 | Codebase-Explorer | v | — | — | — | — | — | — | — | — | — | v (read-only) | — | — |
-| Architect | v | v | v | — | — | — | — | — | — | — | — | — | — |
+| Architect | v | v | v | — | — | — | — | — | — | — | findings/INDEX (R) | — | — |
 | Slice-Planner | v | — | v | — | — | — | — | — | — | v | — | — | — |
-| Step-Researcher | v | — | v | — | — | v | grep | — | — | — | — | grep | grep |
+| Step-Researcher | v | — | v | — | — | v | grep | — | — | — | findings/INDEX (grep) | grep | grep |
 | Coder | v | — | v | v | v | v | v | v | — | — | v (scoped paths) | grep + append | grep + append |
 | Coder + eval-harness | (same as Coder, plus reads `pipeline/07a-eval-harness.md` — only when step-spec has `(RED — eval)` sub-tasks) |
 | Code-Reviewer | — | — | — | v | v | v | — | — | v | v (test-name column only) | — | — | — |
