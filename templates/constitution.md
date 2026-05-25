@@ -37,6 +37,16 @@ Rules that cannot be traded off during design or execution. Each must be testabl
 2. [Rule] — _auditable via: [how]_
 3. [Rule] — _auditable via: [how]_
 
+## Integration context
+
+The app rarely exists in a vacuum. What surrounds it?
+
+- **Upstream data sources:** _[What systems, files, or APIs feed data INTO this app? e.g., "SAP exports CSV nightly", "REST API from lab instruments", "manual Excel uploads" — or "standalone, no upstream"]_
+- **Downstream consumers:** _[What reads this app's output? e.g., "regulatory submission portal", "BI dashboard queries the DB directly", "downstream microservice via message queue" — or "end-user only, no downstream"]_
+- **Data formats / types:** _[Key data formats the app must ingest or produce. e.g., "HL7 FHIR bundles", "IFC/BIM files", "CSV with ISO 8601 timestamps", "PDF reports for auditors" — or "standard web I/O only"]_
+- **Existing systems it must coexist with:** _[e.g., "runs alongside legacy Oracle DB that cannot be modified", "must integrate with company SSO (Azure AD)", "shares infrastructure with [X]" — or "greenfield, no coexistence constraints"]_
+- **Deployment environment:** _[e.g., "on-prem Windows Server behind corporate firewall", "AWS eu-west-1, Kubernetes", "user's local machine (offline-capable)" — or "TBD"]_
+
 ## Tech-stack locks
 
 Specific tech the user has already committed to. Leave empty if the Architect is free to choose.

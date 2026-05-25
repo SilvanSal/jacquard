@@ -19,9 +19,16 @@ Copy `templates/constitution.md` into `specs/constitution.md` and fill in:
    - If async: roughly how much time can the expert give, and across how many rounds?
    This determines how Stage 01 (domain research) and Stage 03 (clarify) behave. See `templates/constitution.md` § "Human profile" for the field definitions.
 3. **Non-negotiables** — 3 to 7 rules that cannot be traded off during design or execution. Examples: "all user data encrypted at rest", "works offline", "no external paid APIs", "accessible to screen readers". Be specific. "High quality" is not a non-negotiable.
-4. **Tech-stack locks** — only if the user has already committed to specific tech. If they haven't, leave this section empty; stage 02 will write it.
-5. **Compliance / legal constraints** — GDPR, HIPAA, license compatibility, data residency. Empty is OK if none apply.
-6. **Non-goals** — explicit anti-features. "We are NOT building multi-tenant." "We do NOT support IE11."
+4. **Integration context** — the app rarely exists in a vacuum. Ask the user:
+   - What systems, files, or APIs feed data into this app? (upstream sources)
+   - What reads the app's output? (downstream consumers)
+   - Are there specific data formats the app must ingest or produce? (HL7, IFC, CSV schemas, PDF reports, etc.)
+   - Does the app need to coexist with existing systems it cannot modify? (legacy DBs, company SSO, shared infrastructure)
+   - Where will it run? (cloud, on-prem, local machine, offline-capable)
+   If the user says "standalone / greenfield / not sure yet," record that explicitly. The Architect and Domain-Researcher both need to know whether integration constraints exist.
+5. **Tech-stack locks** — only if the user has already committed to specific tech. If they haven't, leave this section empty; stage 02 will write it.
+6. **Compliance / legal constraints** — GDPR, HIPAA, license compatibility, data residency. Empty is OK if none apply.
+7. **Non-goals** — explicit anti-features. "We are NOT building multi-tenant." "We do NOT support IE11."
 
 ## Gates
 

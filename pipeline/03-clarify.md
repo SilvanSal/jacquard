@@ -60,8 +60,8 @@ The user replies "1B, 2A, 3-other: something custom". You record their reply ver
 In rough order of priority:
 1. User-facing behavior at key decision points (auth model, pricing model, sharing model, offline behavior).
 2. Data model shape — what are the core entities, what do they relate to?
-3. Deployment target — web only? mobile? desktop? CLI?
-4. Integration points — which external services *must* be supported, which *must not* be.
+3. Integration context (if not fully covered in the constitution) — upstream data sources, downstream consumers, data formats the app must ingest or produce (HL7, IFC, CSV schemas, proprietary exports, etc.), existing systems it must coexist with (legacy DBs, corporate SSO, shared infrastructure). The app rarely exists in a vacuum — the Architect needs to know what surrounds it.
+4. Deployment target — web only? mobile? desktop? CLI? On-prem vs cloud vs local machine?
 5. Performance / scale targets — rough order of magnitude (10 users vs 10k vs 10M).
 6. Anything the domain research flagged as contentious in the "Open questions" section.
 
