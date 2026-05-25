@@ -6,6 +6,8 @@ An AI coding pipeline for projects where getting the domain wrong means building
 
 Drop your materials. The agent reads the papers, designs the architecture, builds test-first, and iterates with you — without losing its place, without hallucinating domain knowledge, and without one agent's context bleeding into another's.
 
+Named after the first programmable machine, the [Jacquard](https://en.wikipedia.org/wiki/Jacquard_machine) loom (1804) — every agent precisely routed, like every thread on the loom.
+
 ---
 
 ## Get Started
