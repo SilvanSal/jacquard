@@ -2,4 +2,4 @@
 .claude/
 
 # Private strategy docs (not part of the pipeline)
-docs/distribution-strategy.md
+docs/
