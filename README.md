@@ -21,19 +21,77 @@ Open a Claude Code session in the Jacquard folder and say "Go." The agent takes 
 
 ---
 
-## Pipeline Files
+## Directory Layout
 
 ```
 Jacquard/
-├── 00-START-HERE.md              # orchestrator entrypoint
-├── input/                        # your project materials
-├── pipeline/                     # stage instructions (00–11)
-├── templates/                    # artifact skeletons (research findings, specs, handoffs)
-├── agents/                       # subagent definitions (one per role)
-├── skills/                       # SKILL.md per stage (copied to .claude/skills/ at bootstrap)
-├── claude-md-template/           # CLAUDE.md triad for the target project
-├── bootstrap/                    # generates .claude/ scaffolding in the target repo
-└── PIPELINE_IMPROVEMENT_CRITIQUE/  # stage 10 output (one per feature)
+├── README.md                     # this file
+├── 00-START-HERE.md              # entrypoint the orchestrator reads first
+├── input/                        # user-supplied project materials (briefs, PDFs, wireframes, specs)
+│   └── README.md
+├── pipeline/                     # ordered stage instructions
+│   ├── 00-constitution.md
+│   ├── 00.5-intake-reader.md
+│   ├── 01-research-domain.md
+│   ├── 02-research-codebase.md
+│   ├── 03-clarify.md
+│   ├── 04-requirements-design.md
+│   ├── 05-plan-slices.md
+│   ├── 06-research-step.md
+│   ├── 07-execute-step.md
+│   ├── 08-review.md
+│   ├── 09-write-handoff.md
+│   ├── 10-pipeline-critique.md
+│   └── 11-iteration-loop.md
+├── templates/                    # skeleton artifacts the stages fill in
+│   ├── constitution.md
+│   ├── intake-brief.md
+│   ├── intake-qa.md
+│   ├── research-finding.md       # rich schema for each research insight (YAML frontmatter + source chain)
+│   ├── research-findings-index.md # auto-maintained index with filter tables + dependency graph
+│   ├── requirements.md
+│   ├── design.md
+│   ├── eval-spec.md
+│   ├── slice-plan.md
+│   ├── step-spec.md
+│   ├── knowledge.md
+│   ├── handoff.md
+│   ├── error-registry.md         # project-scoped bug memory, empty-seeded at stage 01, grown by Coder
+│   ├── hallucination-traps.md    # project-scoped wrong/right-pattern lookup, optionally seeded at stage 01
+│   └── pipeline-critique.md      # post-feature critique skeleton for stage 10
+├── claude-md-template/           # target-project conventions (CLAUDE.md triad)
+│   ├── CLAUDE.md
+│   ├── tech-stack.md
+│   ├── code-style.md
+│   └── best-practices.md
+├── skills/                       # pre-authored SKILL.md per stage — copied into .claude/skills/ at bootstrap
+│   ├── intake-reader/SKILL.md
+│   ├── research-domain/SKILL.md
+│   ├── research-codebase/SKILL.md
+│   ├── clarify/SKILL.md
+│   ├── requirements-design/SKILL.md
+│   ├── plan-slices/SKILL.md
+│   ├── research-step/SKILL.md
+│   ├── execute-step/SKILL.md
+│   ├── review/SKILL.md
+│   └── write-handoff/SKILL.md
+├── agents/                       # pre-authored subagent definitions — copied into .claude/agents/ at bootstrap
+│   ├── intake-reader.md
+│   ├── domain-researcher.md
+│   ├── codebase-explorer.md
+│   ├── architect.md
+│   ├── slice-planner.md
+│   ├── step-researcher.md
+│   ├── coder.md
+│   ├── code-reviewer.md
+│   ├── security-reviewer.md
+│   ├── browser-verifier.md
+│   ├── handoff-writer.md
+│   └── pipeline-critic.md
+├── PIPELINE_IMPROVEMENT_CRITIQUE/  # post-feature critiques — stage 10 output, one per feature
+│   └── README.md
+└── bootstrap/
+    └── generate-claude-scaffolding.md   # meta-step: copies skills/ + agents/ into .claude/ and substitutes tokens
 ```
 
 ---
@@ -54,7 +112,13 @@ One slice at a time — research the step, write code with tests, get it reviewe
 
 ### Phase 4 — Iterate
 
-After shipping, you stay in a loop. Describe bugs, refinements, or new features — the agent figures out the right approach (quick patch, enhancement, or full pipeline) and handles it. Say "done" when you're finished.
+After shipping, you stay in a loop. Describe bugs, refinements, or new features — the agent triages each into the right track:
+
+- **Patch** — small fix, 1–2 files. Execute, review, done.
+- **Enhancement** — extends existing functionality. Full slice: research, build, review, handoff.
+- **New feature** — un-researched domain surface. Re-enters the full pipeline from research or design.
+
+Say "done" when you're finished.
 
 ---
 
