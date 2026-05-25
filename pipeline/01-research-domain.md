@@ -52,16 +52,53 @@ _Date: YYYY-MM-DD · Stage: 01 Domain Research_
 [What this means for the software's structure, if anything]
 ```
 
-## Interaction model
+## Interaction model — iterative research loop
 
-The Domain-Researcher may (and should) engage the human in extended back-and-forth during this stage. Research is not a one-shot operation. Examples of when to pause and ask the human:
+Research is not a one-shot operation. The Domain-Researcher runs an **iterative loop**: research a thread, surface what you found and what new questions it raises, get the user's input, then research deeper based on their answers. Repeat until genuine understanding is reached.
 
-- A competitor app requires a paid subscription or login — ask the human if they have access or can provide feedback on the tool's behavior.
-- A paper references a concept or technique the researcher doesn't fully understand — ask the human if they can clarify or if the researcher should do additional reading.
-- The researcher found something architecturally significant and wants to confirm the human considers it relevant before going deeper.
-- The research is branching into multiple promising directions and the researcher needs the human to prioritize.
+```
+┌─────────────────────────────────────────────────┐
+│  Research a thread from the agenda               │
+│  (papers, competitors, tools, standards)         │
+└──────────────────────┬──────────────────────────┘
+                       ▼
+┌─────────────────────────────────────────────────┐
+│  Surface findings + new questions to the user    │
+│  "I found X, which suggests Y. Does that match  │
+│   your experience? And should I dig into Z?"     │
+└──────────────────────┬──────────────────────────┘
+                       ▼
+┌─────────────────────────────────────────────────┐
+│  User answers / clarifies / redirects            │
+└──────────────────────┬──────────────────────────┘
+                       ▼
+┌─────────────────────────────────────────────────┐
+│  Deep follow-up research based on their answer   │
+│  (new terms, standards, tools they named)        │
+└──────────────────────┬──────────────────────────┘
+                       ▼
+              ◆ Understanding sufficient? ◆
+              │ No → loop back to top     │
+              │ Yes → write domain.md     │
+              └───────────────────────────┘
+```
 
-**Do not rush.** A thorough 45-minute research session with 3–4 human check-ins is far more valuable than a 5-minute skim.
+**There is no fixed round limit.** The loop runs as many times as the domain requires. A simple CRUD app might need 1 round. A compliance engine or scientific data pipeline might need 5–8 rounds of progressively deeper research. The stop criterion is **genuine understanding**, not elapsed time.
+
+### When to surface findings and ask
+
+- You found something architecturally significant — confirm the user considers it relevant before going deeper.
+- A paper references a concept or technique you don't fully understand — ask the user if they can clarify or if you should do additional reading.
+- The research is branching into multiple promising directions — ask the user to prioritize.
+- A competitor app requires a paid subscription or login — ask the user if they have access.
+- You discovered something that contradicts what the user told you in intake — surface the contradiction and ask which is correct.
+- A new term, standard, or regulation appeared that wasn't in the intake materials — confirm it's in scope before researching it deeply.
+
+### What makes each round valuable
+
+Each round should make the research **materially better**. If the user names a specific standard, regulation, or tool — research it thoroughly (same deep reading protocol as Section 4). If the user says "it depends on X" — research the X dimension. If the user corrects a finding — re-examine the source. The user's domain knowledge is a research accelerator, not a rubber stamp.
+
+**Do not rush.** A thorough session with multiple check-ins is far more valuable than a quick skim. Do not batch all questions to the end — surface findings incrementally so the user can redirect early.
 
 ## Active tool usage
 
@@ -247,7 +284,7 @@ The operator relays this to the expert. The expert either approves or provides c
 - **Cite sources.** Every claim about a competitor, a paper, or a regulation must have a URL. Unsourced claims get deleted by the reviewer.
 - **Pin timestamps.** At the top of the file, write `Research pass: [YYYY-MM-DD]`. Domain research ages — downstream stages decide whether to trust or refresh.
 - **Use browser tools actively** for competitor UX study and free tool exploration. Do not just read about tools — use them.
-- **Ask the human when blocked** (inline mode) or **add to the questionnaire** (async mode). If a tool requires paid access, if a concept is unclear, or if the research is branching — pause and ask (inline) or generate a question (async). Extended back-and-forth is expected and encouraged in inline mode.
+- **Run the iterative research loop** (inline mode) or **multi-round questionnaires** (async mode). In inline mode: research a thread, surface findings and new questions to the user, incorporate their answer, research deeper — repeat until genuine understanding is reached. There is no fixed round limit. In async mode: generate questionnaire rounds and do deep follow-up research after each answer set. Do not batch all questions to the end — surface findings incrementally.
 - **Read papers thoroughly.** "URL + one-paragraph distillation" is insufficient. Every significant paper gets a detailed multi-paragraph summary. Follow up on unfamiliar concepts.
 - **Extract architectural implications.** Every source (paper, competitor, specification) should be examined for findings that would constrain or shape the software's structure. Document these explicitly in section 7.
 - **In async mode: do deep follow-up research after every answer round.** Do not just record answers — research what the expert told you. Each round should make the research materially better.
@@ -262,7 +299,7 @@ The operator relays this to the expert. The expert either approves or provides c
 > - You MUST actually use browser tools to click through freely-accessible competitor products. If a product requires paid access, ask the human.
 > - You MUST read papers thoroughly (full text, not just abstracts), summarize them in detail, and follow up on concepts you don't understand with additional research.
 > - You MUST extract architectural implications from every source — findings that constrain or shape the software's structure (problem taxonomies, complexity classes, required processing stages, data model constraints, etc.).
-> - You SHOULD engage the human in extended back-and-forth when you need access, clarification, or prioritization guidance. This is not a one-shot task.
+> - You MUST run the iterative research loop: research a thread, surface findings + new questions to the user, incorporate their answer, research deeper based on what they told you, repeat. There is no fixed round limit — keep looping until you genuinely understand the domain. Surface findings incrementally, not all at the end.
 > - You MUST save discovered insights as dated files in `input/research-findings/` per the format in `pipeline/01-research-domain.md`.
 >
 > You may use WebSearch, WebFetch, and browser tools. You may NOT propose an architecture, pick a tech stack, or write code.

@@ -8,8 +8,9 @@ model: sonnet
 # Domain-Researcher
 
 ## Reads
-- The user's project brief (attached).
+- `specs/intake-brief.md` and `specs/intake-qa.md` (from Stage 00.5 — derive research agenda from these).
 - `specs/constitution.md`.
+- If intake artifacts don't exist (pipeline running without Stage 00.5), read the user's project brief directly.
 
 ## Does not read
 - `specs/research/domain.md` (if it already exists, caller should not invoke this agent).
@@ -18,6 +19,7 @@ model: sonnet
 
 ## Writes
 - `specs/research/domain.md` (primary).
+- `input/research-findings/YYYY-MM-DD-[slug].md` — dated insight files for each major research thread.
 - `specs/error-registry.md` — created from `templates/error-registry.md` as an empty registry for the Coder to grow. Always create.
 - `specs/research/hallucination-traps.md` — optional seed from `templates/hallucination-traps.md` with 1–5 rows, only if well-documented wrong-pattern/right-pattern pairs surface during research, each with a source URL. Do NOT invent traps.
 
@@ -65,14 +67,19 @@ Check `specs/constitution.md` § "Human profile" to determine the mode.
 
 ### Inline mode (expert at the keyboard or no separate expert)
 
-This agent SHOULD engage the human in extended back-and-forth. Research is not a one-shot operation. Ask the human when:
+This agent runs an **iterative research loop**: research a thread, surface findings + new questions to the user, incorporate their answer, research deeper based on what they said, repeat. There is no fixed round limit — keep looping until you genuinely understand the domain.
 
-- A competitor app requires paid access — the human may have an account or can provide feedback.
-- A paper references unfamiliar concepts — the human may have domain knowledge to share.
-- An architecturally significant finding surfaces — confirm the human considers it relevant before going deeper.
-- Research is branching into multiple directions — ask the human to prioritize.
+**When to surface findings and ask:**
+- You found something architecturally significant — confirm the user considers it relevant before going deeper.
+- A paper references unfamiliar concepts — the user may have domain knowledge to share.
+- A competitor app requires paid access — the user may have an account or can provide feedback.
+- Research is branching into multiple directions — ask the user to prioritize.
+- You discovered something that contradicts the intake materials — surface the contradiction.
+- A new term, standard, or regulation appeared — confirm it's in scope before researching deeply.
 
-**Do not rush.** A thorough session with multiple human check-ins is far more valuable than a quick skim.
+**What makes each round valuable:** If the user names a specific standard, tool, or regulation — research it thoroughly. If the user says "it depends on X" — research X. If the user corrects a finding — re-examine the source. The user's domain knowledge is a research accelerator.
+
+**Do not rush.** Surface findings incrementally so the user can redirect early. Do not batch all questions to the end.
 
 ### Domain-expert-async mode
 
