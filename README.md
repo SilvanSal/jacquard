@@ -2,9 +2,7 @@
 
 **Every thread precisely routed — research-first AI coding for complex domains.**
 
-Named after the [Jacquard loom](https://en.wikipedia.org/wiki/Jacquard_machine) (1804), the first programmable machine. Punch cards controlled individual threads, each precisely routed to create complex patterns — and inspired Babbage's Analytical Engine, the ancestor of modern computing. Jacquard does the same for AI-assisted software development: each agent is a thread with controlled inputs, isolated context, and a specific job. Complex software emerges from disciplined, individually routed agents — not from a single LLM session hoping for the best.
-
-**Human in the loop by design.** For any non-trivial project, human feedback during the research and planning stages is not optional — it's what separates a useful pipeline from an LLM confidently building the wrong thing. The agent pauses, asks, and incorporates human judgment at key decision points rather than racing to produce output.
+Named after the [Jacquard loom](https://en.wikipedia.org/wiki/Jacquard_machine) — each agent is a thread with controlled inputs, isolated context, and a specific job. Human in the loop at every gate, because an LLM that skips domain research will confidently build the wrong thing.
 
 A reusable, stage-gated playbook you hand to an LLM coding agent so it bootstraps a disciplined research-then-execute pipeline for a new app. Not a framework. Not a runtime. A set of linked Markdown instructions plus templates plus a bootstrap step that emits a project-specific `.claude/` scaffolding into the target repo.
 
