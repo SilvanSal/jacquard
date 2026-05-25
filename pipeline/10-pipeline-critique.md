@@ -49,20 +49,45 @@ If a signal stays flat or rises after applying a fix, the fix was likely at the 
 
 After the Pipeline-Critic finishes, the orchestrator presents this to the user:
 
-> Your pipeline critique is saved in `PIPELINE_IMPROVEMENT_CRITIQUE/`. Nice work getting through the whole feature.
+> Your pipeline critique is saved in `PIPELINE_IMPROVEMENT_CRITIQUE/`. Nice work getting through the whole feature — seriously, well done.
 >
-> If you'd like to help improve the pipeline for others, you can share your findings as a GitHub Issue — it takes about 2 minutes and it's mostly copy-paste from the file that was just generated. Here's the link:
+> Quick thing before we wrap up: I can share your pipeline findings with the Jacquard community if you're up for it. It's totally painless — I'll submit it for you right now, you just say "yes."
 >
-> [Submit your critique](https://github.com/SilvanSal/jacquard/issues/new?template=pipeline-critique.yml)
+> What actually gets shared: just the meta stuff — quality signal counts, which pipeline instructions caused friction, and your top suggestions. Think "the Coder deviated from the step-spec twice" or "Stage 03 asked the wrong questions." That kind of thing.
 >
-> Just so you know: the template only collects meta-level signals about how the pipeline performed — things like quality counts and instruction gaps. Nothing about your code, business logic, or proprietary data gets shared. If any field feels too close to home, skip it.
+> What does NOT get shared: your code, your business logic, client names, architecture details — none of that. Zero proprietary information leaves your machine.
 >
-> Either way, thanks for using Jacquard. Every project that runs through it teaches us something.
+> These submissions are genuinely how the pipeline gets better. Every project that runs through Jacquard teaches us something we can't see from our side.
+>
+> Want me to submit it? Just say **yes** and I'll handle the rest.
 
 **Behavioral rules for the nudge:**
 - Present it once, warmly, without pressure. Do not repeat if the user ignores it.
-- Do not offer to submit on the user's behalf — the user controls what gets shared.
-- If the user says they'd rather not share, acknowledge and move on. No guilt.
+- If the user says "yes": the orchestrator extracts the relevant fields from the critique file and submits the GitHub Issue via `gh issue create` using the template at `https://github.com/SilvanSal/jacquard/issues/new?template=pipeline-critique.yml`. The user does not need to copy-paste or leave their terminal.
+- If the user says no or ignores it, acknowledge warmly and move on. No guilt, no follow-up.
+
+**Submission mechanics (when user says yes):**
+
+The orchestrator runs:
+```bash
+gh issue create --repo SilvanSal/jacquard \
+  --title "[Critique] <domain> — <project-slug>" \
+  --body "<filled from critique file fields>"
+```
+
+Fields to extract from `PIPELINE_IMPROVEMENT_CRITIQUE/[feature]-[YYYY-MM-DD].md`:
+- `domain` → from constitution or intake-brief
+- `domain_complexity` → infer from research depth signals
+- `slices` → count from slice-plan
+- `quality_signals` → copy the quality signal summary table verbatim
+- `instruction_gaps` → copy the "Pipeline instruction gaps" section
+- `suggestions` → copy the top 3 suggested changes
+
+Omit optional fields (`architectural_implications`, `expert_questionnaire_feedback`, `freeform`) unless the critique file has clear content for them. When in doubt, leave blank — partial submissions are welcome.
+
+**Privacy guardrails for auto-submission:**
+- Before submitting, the orchestrator MUST grep the composed body for: project-specific file paths (outside `pipeline/`, `specs/`, `templates/`), class/function names from the user's application code, client or company names, API keys or URLs. If any are found, strip them or replace with generic placeholders (e.g., `[app-specific path]`).
+- If unsure whether something is proprietary, omit it.
 
 ## Orchestrator dispatch prompt (copy verbatim)
 
@@ -82,4 +107,6 @@ After the Pipeline-Critic finishes, the orchestrator presents this to the user:
 
 ## Stop condition
 
-`PIPELINE_IMPROVEMENT_CRITIQUE/[feature]-[YYYY-MM-DD].md` exists with all 6 sections filled. Quality signal counts are numeric (not "some" or "several"). Every pipeline instruction gap cites specific artifact evidence. Suggestions include file paths and section headings. The human has read the output and decided which suggestions to apply (or defer).
+`PIPELINE_IMPROVEMENT_CRITIQUE/[feature]-[YYYY-MM-DD].md` exists with all 6 sections filled. Quality signal counts are numeric (not "some" or "several"). Every pipeline instruction gap cites specific artifact evidence. Suggestions include file paths and section headings.
+
+After the Pipeline-Critic subagent returns, the **orchestrator** (not the subagent) presents the sharing nudge from § "Orchestrator nudge to share" above directly to the user — including the clickable link `https://github.com/SilvanSal/jacquard/issues/new?template=pipeline-critique.yml`. The feature is complete once the nudge has been presented (regardless of whether the user submits).

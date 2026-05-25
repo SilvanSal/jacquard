@@ -63,6 +63,10 @@ You will run these in strict order. Each stage has a stop condition. Do not skip
                             → auto-advance to next slice (or end-of-feature)
 ─── end loop ───
 10  pipeline-critique       (Pipeline-Critic)    → PIPELINE_IMPROVEMENT_CRITIQUE/[feature]-[date].md
+─── iteration loop (eternal until user exits) ───
+11  iteration-loop          (orchestrator triage) → Patch / Enhancement / New Feature track
+                            → loops back after each iteration
+─── user says "done" ───
 ```
 
 **Auto-chain by default.** The orchestrator advances automatically from one stage to the next after each stop condition is met. It only pauses at human gates (see below). Between slices, the orchestrator continues into the next slice's stage 06 automatically — it does NOT stop and wait for the user to start a new session.
@@ -87,9 +91,14 @@ The orchestrator advances automatically between stages. It pauses ONLY at human 
 | Async expert rounds | During stage 01 (async mode only) | Operator returns expert answers as `expert-answers-R[N].md` |
 | Slice plan approval | After stage 05 | User approves the slice plan |
 | Block verdict | After stage 08 review | Return to stage 07 with fixes |
+| Iteration loop | After stage 10 critique + nudge | User describes next change (loops) or says "done" (exits) |
 | Context overflow | Any point | Orchestrator writes `specs/.pipeline-state/continue.md` and stops |
 
 Between all other stages, the orchestrator dispatches the next subagent immediately. Between slices, it auto-advances to the next slice's stage 06 (after the drift check). After the final slice, it auto-dispatches Stage 10 (Pipeline Critic).
+
+**After Stage 10 returns**, the orchestrator presents the critique-sharing nudge directly to the user. Read the nudge text from `pipeline/10-pipeline-critique.md` § "Orchestrator nudge to share" and present it in your own words. Offer to submit the critique as a GitHub Issue on the user's behalf — all they have to do is say "yes." If they agree, extract the fields from the critique file and submit via `gh issue create` following the mechanics in that section. Follow the behavioral rules (once, warm, no pressure, no guilt).
+
+**Then enter the iteration loop.** Read `pipeline/11-iteration-loop.md` and present the loop entry message. The orchestrator stays active, triaging each new user request into Patch / Enhancement / New Feature track and executing accordingly. The loop runs until the user explicitly says "done." See § "Iteration loop" in `pipeline/11-iteration-loop.md` for triage logic, track definitions, and exit behavior.
 
 **The user should never have to `/clear`, start a new session, or type "continue stage N."** If that happens, the orchestrator is broken.
 
@@ -105,10 +114,12 @@ _Written: [YYYY-MM-DD HH:MM] · Reason: context overflow_
 - **Stage:** [current stage number and name]
 - **Feature:** [feature slug]
 - **Slice:** [current slice ID, or "pre-slice" if in stages 00-05]
+- **Loop state:** [if in iteration loop: "iteration — [track] in progress" or "iteration — awaiting user input"]
 - **Last completed artifact:** [file path of the last successfully produced artifact]
 
 ## Next action
-[The exact dispatch prompt for the next stage — copy verbatim from the pipeline file]
+[The exact dispatch prompt for the next stage — copy verbatim from the pipeline file.
+If in iteration loop: describe the current track and where in its flow execution is.]
 
 ## State summary
 [3-5 bullet summary of what's been completed and any pending decisions]

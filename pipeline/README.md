@@ -1,6 +1,6 @@
 # Pipeline — Flow at a Glance
 
-One-screen map of the 11 stages. For rules, read `pipeline/00-constitution.md` and the root [README.md](../README.md). For orchestrator behavior, read [00-START-HERE.md](../00-START-HERE.md).
+One-screen map of the 12 stages (00–11). For rules, read `pipeline/00-constitution.md` and the root [README.md](../README.md). For orchestrator behavior, read [00-START-HERE.md](../00-START-HERE.md).
 
 ## Stage DAG
 
@@ -67,6 +67,38 @@ One-screen map of the 11 stages. For rules, read `pipeline/00-constitution.md` a
                                       ▼
   end-of-feature              (Browser-Verifier)    → specs/[feature]/ui-verification.md
                                                     (only if UI + Chromium/Preview + dev server)
+                                      │
+                                      ▼
+  10  pipeline-critique       (Pipeline-Critic)     → PIPELINE_IMPROVEMENT_CRITIQUE/[feature]-[date].md
+                                      │
+                                      ▼
+                              ◆ CRITIQUE NUDGE ◆   (orchestrator offers to submit for user)
+                                      │
+                                      ▼
+  ╔════════════════════════════════════════════════════════════════════════════════╗
+  ║          iteration loop (eternal until user says "done")                      ║
+  ║                                                                                ║
+  ║  11  triage                (orchestrator)        classifies user request        ║
+  ║                                   │                                            ║
+  ║                        ┌──────────┼──────────┐                                 ║
+  ║                        ▼          ▼          ▼                                 ║
+  ║                     PATCH    ENHANCEMENT  NEW FEATURE                          ║
+  ║                       │          │            │                                 ║
+  ║                       │     06→07→08→09  01/03 → full pipeline                 ║
+  ║                       │          │            │                                 ║
+  ║                       ▼          ▼            ▼                                 ║
+  ║               07→08 (light)   handoff      critique                            ║
+  ║                       │          │            │                                 ║
+  ║                       └──────────┴────────────┘                                ║
+  ║                                   │                                            ║
+  ║                                   ▼                                            ║
+  ║                         "Anything else?"  ←───── loops back                    ║
+  ║                                                                                ║
+  ╚════════════════════════════════════════════════════════════════════════════════╝
+                                      │
+                              (user says "done")
+                                      ▼
+                               session complete
 ```
 
 ## Gates and stops
@@ -81,6 +113,7 @@ One-screen map of the 11 stages. For rules, read `pipeline/00-constitution.md` a
 | After stage 08 | `block` verdict from Code- or Security-Reviewer | Return to stage 07 with fixes |
 | After stage 09 | — | Orchestrator auto-advances to next slice (drift check → stage 06) or stage 10 if final slice |
 | End-of-feature | Browser-Verifier runs once (not per slice) | `fail` opens a remediation slice (re-run 05–09) |
+| Iteration loop | User input drives each cycle | User describes change (loops) or says "done" (exits) |
 
 ## Artifacts by location
 
