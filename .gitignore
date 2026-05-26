@@ -3,3 +3,6 @@
 
 # Private strategy docs (not part of the pipeline)
 docs/
+
+# Local planning / TODO files
+TODO.md
