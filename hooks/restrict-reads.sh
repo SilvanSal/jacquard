@@ -10,7 +10,7 @@ stage=$(tr -d '[:space:]' < "$stage_file")
 [[ -z "$stage" || "$stage" == "orchestrator" ]] && exit 0
 
 # Deny-map: stage-slug → one forbidden path pattern per line.
-# Encodes the load-bearing "MUST NOT read" rules from README's read-access matrix.
+# Encodes the load-bearing "MUST NOT read" rules from each agent's read-list (agents/[name].md).
 # Patterns are literal substrings against the Read file_path.
 deny_patterns=""
 case "$stage" in
@@ -56,7 +56,7 @@ if [[ -n "$deny_patterns" ]]; then
         hookSpecificOutput: {
           hookEventName: "PreToolUse",
           permissionDecision: "deny",
-          permissionDecisionReason: ("Agent " + $s + " is not permitted to Read " + $p + " (matches denied pattern " + $x + " from the read-access matrix). If you need this, the playbook says raise to the orchestrator — it usually means the handoff or step-spec is insufficient.")
+          permissionDecisionReason: ("Agent " + $s + " is not permitted to Read " + $p + " (matches denied pattern " + $x + " from its read-list). If you need this, the playbook says raise to the orchestrator — it usually means the handoff or step-spec is insufficient.")
         }
       }'
       exit 0

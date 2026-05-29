@@ -6,6 +6,7 @@ path=$(jq -r '.tool_input.file_path // empty' <<< "$CLAUDE_HOOK_INPUT")
 case "$path" in
   specs/*|*/specs/*) exit 0 ;;
   .claude/*|*/.claude/*) exit 0 ;;
+  input/*|*/input/*) exit 0 ;;
   */CLAUDE.md|*/tech-stack.md|*/code-style.md|*/best-practices.md|CLAUDE.md|tech-stack.md|code-style.md|best-practices.md) exit 0 ;;
 esac
 

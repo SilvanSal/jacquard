@@ -14,11 +14,11 @@ Read, in this order:
 
 Then read the current slice's step-spec, knowledge.md, and previous slice's handoff.md as directed by the orchestrator prompt.
 
-## Read-access matrix (enforced)
+## Read-access lists (enforced)
 
 Your role determines what you read. Do not read outside your list. If you need something outside the list, stop and ask the orchestrator.
 
-See `specs/constitution.md` and the pipeline README for the full matrix. Short version:
+Each agent's full read-list lives in its own `.claude/agents/[name].md` definition (the `Reads` / `Does not read` / `Grep-only` sections). Short version:
 
 - **Researchers** read constitution + research artifacts. Not best-practices or code-style.
 - **Coders** read step-spec + knowledge + handoff + triad (tech-stack / code-style / best-practices). Not domain research, not prior slices' knowledge.

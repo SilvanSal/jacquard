@@ -176,6 +176,6 @@ project root/
 4. **Reviewers don't edit.** They write verdicts and text-only suggested-fixes. The Coder patches.
 5. **Plan one slice ahead.** Don't pre-generate step-specs for future slices.
 
-## Read-access matrix
+## Read-access lists
 
-Lives in the root [README.md § Read-access matrix](../README.md#read-access-matrix). Every dispatch prompt enforces a row from that table.
+Each subagent's read-list lives in its own definition — the `Reads` / `Does not read` / `Grep-only` sections in `agents/[name].md`. Every dispatch prompt enforces that agent's list; the load-bearing "must not read" rules are additionally backed at runtime by `hooks/restrict-reads.sh`.

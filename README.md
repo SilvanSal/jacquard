@@ -48,7 +48,7 @@ Say `done` when you're finished.
 
 ### It actually reads the literature
 
-Scientific papers, competitor analyses, API docs, wireframes — drop them in `input/` before you start. The pipeline reads everything, synthesizes a structured brief, and asks you the 5–10 questions that would send the architecture in different directions if answered differently. Domain research is then targeted at *your* gaps, not a generic survey. The agent surfaces what it finds as it goes — you redirect, correct, or confirm, and it adjusts its research based on your feedback. This loops until the domain is genuinely understood, not just skimmed. Newly discovered insights accumulate in `input/research-findings/` across the whole project.
+Scientific papers, competitor analyses, API docs, wireframes — drop them in `input/` before you start. The pipeline reads everything, synthesizes a structured brief, and asks you the 5–10 questions that would send the architecture in different directions if answered differently. Domain research is then targeted at *your* gaps, not a generic survey. The agent surfaces what it finds as it goes — you redirect, correct, or confirm, and it adjusts its research based on your feedback. This loops until the domain is genuinely understood, not just skimmed. Every source is actively examined for architectural implications — problem taxonomies that imply routing stages, complexity classes that require different algorithms, data model constraints, performance cliffs, required processing stages. These feed directly into the architect's design, not as vague suggestions but as documented constraints with source chains. Newly discovered insights accumulate in `input/research-findings/` across the whole project.
 
 ### It adapts to who you are
 
@@ -56,7 +56,7 @@ Not every pipeline operator is a developer. At the start, Jacquard profiles who'
 
 ### Agent isolation is enforced at runtime, not on the honor system
 
-Every subagent gets a fresh context window with only the files it's allowed to see. A researcher never sees code style rules. A coder never sees raw research papers. Twelve specialized roles, each with an enforced read-list — enforced by a runtime hook (`restrict-reads.sh`) that checks the filesystem, not by asking the agent to behave. No context pollution, no attention drift, no hallucinations from stale information bleeding across stages.
+Every subagent gets a fresh context window and a read-list defined in its own definition (`agents/[name].md`) — the files it's allowed to see, and the ones it must not. A researcher never sees code style rules. A coder never sees raw research papers. Twelve specialized roles, each with an explicit read-list. The load-bearing "must not read" rules are backed at runtime by a hook (`restrict-reads.sh`) that checks the filesystem per active stage, not just by asking the agent to behave. No context pollution, no attention drift, no hallucinations from stale information bleeding across stages.
 
 ### The architect has to justify its choices
 
@@ -96,7 +96,7 @@ Compliance engines. Medical device controllers. Financial modeling tools. Scient
 
 ## Under the Hood
 
-**Runtime access enforcement.** The read-access matrix is enforced by shell hooks at every tool call — not merely described to agents as guidelines. An agent denied a file gets a clear error, not a hallucination.
+**Runtime access enforcement.** The load-bearing "must not read" rules from each agent's read-list are enforced by shell hooks on `Read` calls — not merely described to agents as guidelines. An agent denied a file gets a clear error, not a hallucination.
 
 **Error registry + hallucination traps.** Two project-scoped memory files: one for bugs with recurrence tracking (the step-researcher checks these before writing new code), one for known wrong patterns in your domain (seeded from research, grown by the coder). Mistakes don't repeat across slices.
 
@@ -171,7 +171,6 @@ Jacquard/
 │   └── pipeline-critic.md
 ├── PIPELINE_IMPROVEMENT_CRITIQUE/  # post-feature critiques — stage 10 output, one per feature
 │   └── README.md
-├── docs/decisions/               # architecture decision records for the pipeline itself
 └── bootstrap/
     └── generate-claude-scaffolding.md   # meta-step: copies agents/ into .claude/ and substitutes tokens
 ```
